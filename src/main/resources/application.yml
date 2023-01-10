@@ -1,1 +1,13 @@
-
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /campsite
+spring:
+    datasource:
+      url: jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC
+      username: ${DB-USER:campsite}
+      password: ${DB-PASS:SomePasswordToCampsite}
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      show-sql: false
