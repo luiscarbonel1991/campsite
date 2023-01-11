@@ -11,3 +11,5 @@ spring:
       hibernate:
         ddl-auto: validate
       show-sql: false
+campsite:
+  max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:30}

@@ -1,12 +1,11 @@
-package com.reservation.campsite.services;
+package com.reservation.campsite.services.reservation;
 
 import com.reservation.campsite.persistence.entity.Availability;
 import com.reservation.campsite.persistence.repository.AvailabilityRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class AvailabilityServiceImpl implements AvailabilityService{
@@ -18,9 +17,13 @@ public class AvailabilityServiceImpl implements AvailabilityService{
     }
 
     @Override
-    public Map<LocalDate, Integer> findAvailability(LocalDate from, LocalDate to) {
-        return this.availabilityRepository.findAvailabilitiesByDateBetween(from, to)
-                .stream().filter(availability -> availability.getAvailable() > 0)
-                .collect(Collectors.toMap(Availability::getDate, Availability::getAvailable));
+    public List<Availability> findAvailability(LocalDate dateFrom, LocalDate dateTo) {
+        return this.availabilityRepository.findAvailabilitiesByDateBetween(dateFrom, dateTo)
+                .stream().filter(availability ->
+                        availability.hasTotalAvailability() &&
+                        availability.hasAvailability()).toList();
+
     }
+
+
 }

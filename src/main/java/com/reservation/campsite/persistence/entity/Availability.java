@@ -25,4 +25,15 @@ public class Availability {
     @Column(name = "available", nullable = false)
     private Integer available = 0;
 
+    @Column(name = "available_total", nullable = false)
+    private Integer availableTotal = 0;
+
+    public boolean hasAvailability() {
+        return this.available > 0;
+    }
+
+    public boolean hasTotalAvailability() {
+        return this.availableTotal > 0;
+    }
+
 }
