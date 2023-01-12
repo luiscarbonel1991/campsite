@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface AvailabilityService {
     List<Availability> findAvailability(LocalDate from, LocalDate to);
+
+    void saveAll(List<Availability> availabilities);
 }

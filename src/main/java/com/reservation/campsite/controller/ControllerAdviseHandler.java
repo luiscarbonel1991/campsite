@@ -2,6 +2,7 @@ package com.reservation.campsite.controller;
 
 import com.reservation.campsite.exception.BusinessException;
 import com.reservation.campsite.exception.ServerException;
+import com.reservation.campsite.util.ParamName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.Map;
 
 import static com.reservation.campsite.mapper.Mapper.mapper;
 
@@ -36,6 +39,6 @@ public class ControllerAdviseHandler extends ResponseEntityExceptionHandler {
     private static ResponseEntity<Object> getResponseEntityByException(BusinessException e) {
         ResponseStatus responseStatus = AnnotatedElementUtils.findMergedAnnotation(e.getClass(), ResponseStatus.class);
         HttpStatus status = responseStatus != null ? responseStatus.value() : HttpStatus.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(status).body(mapper(e, status).toErrorResponseDTO());
+        return ResponseEntity.status(status).body(Map.of(ParamName.RESPONSE_ERROR.getNameParam(), mapper(e, status).toErrorResponseDTO()));
     }
 }

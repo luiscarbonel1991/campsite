@@ -12,4 +12,8 @@ spring:
         ddl-auto: validate
       show-sql: false
 campsite:
-  max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:30}
+  max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:31}
+  max-stay-days: ${CAMPSITE_MAX_STAY_DAYS:3}
+  min-stay-days: ${CAMPSITE_MIN_STAY_DAYS:1}
+  min-ahead-arrival-days: ${CAMPSITE_MIN_AHEAD_ARRIVAL_DAYS:1}
+  max-ahead-arrival-days: ${CAMPSITE_MAX_AHEAD_ARRIVAL_DAYS:31}

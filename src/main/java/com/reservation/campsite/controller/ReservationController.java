@@ -1,9 +1,11 @@
 package com.reservation.campsite.controller;
 
 import com.reservation.campsite.dto.request.ReservationRequestDTO;
+import com.reservation.campsite.persistence.entity.Reservation;
 import com.reservation.campsite.services.reservation.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +31,11 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(
+    public ResponseEntity<Reservation> create(
             @Valid @RequestBody ReservationRequestDTO reservationRequestDTO
     ) {
-        reservationService.create(reservationRequestDTO);
-        return ResponseEntity.ok("Hello");
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                reservationService.create(reservationRequestDTO)
+        );
     }
 }

@@ -19,7 +19,7 @@ create table if not exists campsite.availability
 
 create table if not exists campsite.reservation
 (
-    id             bigint       not null
+    id             bigint auto_increment
         primary key,
     name           varchar(100) not null,
     email          varchar(50)  not null,
