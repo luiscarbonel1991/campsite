@@ -10,16 +10,23 @@ import java.time.LocalDate;
 public class ValidateServiceImpl implements ValidateService {
 
     @Override
-    public void validateDateRange(LocalDate from, LocalDate to) {
+    public void validateDateRange(LocalDate from, String nameFromParam, LocalDate to, String nameToParam) {
         if (from.isAfter(to)) {
-            throw BadRequestException.invalidDateRange(from, to);
+            throw BadRequestException.invalidDateRange(from, nameFromParam, to, nameToParam);
         }
     }
 
     @Override
-    public void isNull(Object object, @NotNull String name) {
+    public void isNotNull(Object object, @NotNull String name) {
         if (object == null) {
-            throw BadRequestException.missingParams(name);
+            throw BadRequestException.missingParam(name);
+        }
+    }
+
+    @Override
+    public void isNotEmptyOrNull(String str, @NotNull String name) {
+        if (str == null || str.isEmpty()) {
+            throw BadRequestException.missingParam(name);
         }
     }
 }

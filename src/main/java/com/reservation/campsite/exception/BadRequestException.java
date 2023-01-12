@@ -12,15 +12,16 @@ public class BadRequestException extends BusinessException {
         super(errorCode, message);
     }
 
-    public static BadRequestException missingParams(String... params) {
+    public static BadRequestException missingParam(String... params) {
         ErrorCode code = ErrorCode.BAD_REQUEST_MISSING_PARAMETERS;
         return new BadRequestException(code,
                 String.format("%s. [%s]", code.getMessage(), String.join(", ", params)));
     }
 
-    public static BadRequestException invalidDateRange(LocalDate from, LocalDate to) {
+    public static BadRequestException invalidDateRange(LocalDate from, String nameFromParam, LocalDate to, String nameToParam) {
         ErrorCode code = ErrorCode.BAD_REQUEST_INVALID_DATE_RANGE;
         return new BadRequestException(code,
-                String.format("%s. Start date can not be after end date. Start date: %s, End date: %s",code.getMessage(), from, to));
+                String.format("%s. Start date can not be after end date. %s: %s, %s: %s",code.getMessage(),
+                        nameFromParam, from, nameToParam, to));
     }
 }

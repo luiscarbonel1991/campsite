@@ -17,3 +17,19 @@ create table if not exists campsite.availability
     comment 'Contains the availability of reservations by date';
 
 
+create table if not exists campsite.reservation
+(
+    id             bigint       not null
+        primary key,
+    name           varchar(100) not null,
+    email          varchar(50)  not null,
+    arrival_date   date         not null,
+    departure_date date         not null,
+    create_date    datetime     not null,
+    update_date    datetime     null,
+    cancel_date    datetime     null
+) comment 'Contains campsite reservations';
+
+
+
+
