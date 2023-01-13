@@ -8,20 +8,23 @@ import com.reservation.campsite.persistence.repository.ReservationRepository;
 import com.reservation.campsite.services.validation.ValidateService;
 import com.reservation.campsite.util.ParamName;
 import com.reservation.campsite.util.RangeDate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.reservation.campsite.persistence.entity.Availability;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.reservation.campsite.mapper.Mapper.mapper;
 
 @Service
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
     @Value("${campsite.max-advance-days}")
@@ -45,6 +48,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
 
+
     public ReservationServiceImpl(AvailabilityService availabilityService, ValidateService validateService, ReservationRepository reservationRepository) {
         this.availabilityService = availabilityService;
         this.validateService = validateService;
@@ -53,10 +57,10 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Map<LocalDate, Integer> findAvailability(LocalDate dateFrom, LocalDate dateTo) {
-        if(dateFrom == null) {
+        if (dateFrom == null) {
             dateFrom = LocalDate.now();
         }
-        if(dateTo == null) {
+        if (dateTo == null) {
             dateTo = dateFrom.plusDays(maxAdvanceDays);
         }
         validateService.validateDateRange(dateFrom, "arrivalDate", dateTo, "departureDate");
@@ -68,33 +72,34 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public Reservation create(ReservationRequestDTO reservationDTO) {
+    public Map<String, Long> create(ReservationRequestDTO reservationDTO) {
         validateService.isNotNull(reservationDTO, "reservation");
         validateService.isNotEmptyOrNull(reservationDTO.getName(), "name");
         String emailToCreate = reservationDTO.getEmail();
         validateService.isNotEmptyOrNull(reservationDTO.getEmail(), "email");
         validateService.validateEmail(emailToCreate, "email");
         this.validateStayRangeDays(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate());
-        if(Boolean.TRUE.equals(this.reservationRepository.existsByEmail(emailToCreate))) {
-            throw BadRequestException.alreadyExists(ParamName.EMAIL.getNameParam(), emailToCreate);
+        Reservation reservationFound = this.reservationRepository.findByEmail(emailToCreate);
+        if (reservationFound != null && reservationFound.isNotCancelled()) {
+            throw BadRequestException.reservationAlreadyExists(ParamName.EMAIL.getNameParam(), emailToCreate);
         }
-
-        synchronized (this) {
-            List<Availability> availabilities = availabilityService.findAvailability(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate());
-
-            availabilities.forEach(availability -> {
-                if(availability.getAvailable() == 0) {
-                    throw NotFoundException.availabilityDateRange(availability.getDate());
-                }
-                availability.setAvailable(availability.getAvailable() - 1);
-            });
-
-            availabilityService.saveAll(availabilities);
-
-            return this.save(mapper(reservationDTO).toReservation());
-        }
+        availabilityService.updateAvailability(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate(), -1);
+        return Map.of("reservationId", this.save(mapper(reservationDTO).toReservation()).getId());
     }
 
+    @Override
+    public void cancel(Long id) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()) {
+            availabilityService.updateAvailability(reservation.get().getArrivalDate(), reservation.get().getDepartureDate(), 1);
+            Reservation reservationToSave = reservation.get();
+            reservationToSave.setCancelDate(Instant.now());
+            reservationRepository.save(reservationToSave);
+        } else {
+            throw NotFoundException.reservationIdNotFound(id);
+        }
+    }
+    
     @Transactional
     public Reservation save(Reservation reservationToSave) {
         return this.reservationRepository.save(reservationToSave);

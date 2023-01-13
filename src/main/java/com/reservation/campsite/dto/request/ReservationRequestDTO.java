@@ -1,6 +1,5 @@
 package com.reservation.campsite.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 @Builder
 public class ReservationRequestDTO {
 
-    @NotNull
     private String name;
     private String email;
     private LocalDate arrivalDate;

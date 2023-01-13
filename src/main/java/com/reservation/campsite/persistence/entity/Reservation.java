@@ -40,4 +40,8 @@ public class Reservation {
     private Instant updateDate;
     @Column(name = "cancel_date", nullable = false)
     private Instant cancelDate;
+    
+    public boolean isNotCancelled() {
+        return cancelDate == null;
+    }
 }

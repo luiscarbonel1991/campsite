@@ -17,4 +17,10 @@ public class NotFoundException extends BusinessException {
         return new NotFoundException(errorCode,
                 String.format("%s. Date: %s", errorCode.getMessage(), date));
     }
+
+    public static NotFoundException reservationIdNotFound(Long id) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_RESERVATION_ID;
+        return new NotFoundException(errorCode,
+                String.format("%s. Id: %s", errorCode.getMessage(), id));
+    }
 }

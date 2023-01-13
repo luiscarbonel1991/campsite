@@ -1,4 +1,4 @@
-package com.reservation.campsite.dto;
+package com.reservation.campsite.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,9 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ErrorResponseDTO {
-
+public class GeneralResponseDTO{
     private String message;
-    private String error;
-    private Integer status;
+    private int status;
     private Instant timestamp;
     private String code;
-
 }

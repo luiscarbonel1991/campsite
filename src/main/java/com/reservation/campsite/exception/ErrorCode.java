@@ -7,8 +7,9 @@ public enum ErrorCode {
     BAD_REQUEST_MALFORMED_BODY("Malformed body"),
     BAD_REQUEST_INVALID_STAY_RANGE( "Invalid stay range"),
     BAD_REQUEST_INVALID_EMAIL(  "Invalid email"),
-    BAD_REQUEST_ALREADY_EXISTS( "Already exists"),
-    NOT_FOUND_AVAILABILITY_TO_DATE( "Not found availability to specific date");
+    BAD_REQUEST_RESERVATION_ALREADY_EXISTS( "Reservation already exists."),
+    NOT_FOUND_AVAILABILITY_TO_DATE( "Not found availability to specific date"),
+    NOT_FOUND_RESERVATION_ID( "Not found reservation id");
 
     private final String message;
 

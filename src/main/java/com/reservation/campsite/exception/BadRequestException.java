@@ -46,9 +46,9 @@ public class BadRequestException extends BusinessException {
                 String.format("%s. Email: %s", code.getMessage(), email));
     }
 
-    public static BadRequestException alreadyExists(String paramName, Object object) {
-        ErrorCode code = ErrorCode.BAD_REQUEST_ALREADY_EXISTS;
+    public static BadRequestException reservationAlreadyExists(String paramName, Object object) {
+        ErrorCode code = ErrorCode.BAD_REQUEST_RESERVATION_ALREADY_EXISTS;
         return new BadRequestException(code,
-                String.format("%s. %s: %s", code.getMessage(), paramName, object));
+                String.format("%s with %s: %s", code.getMessage(), paramName, object));
     }
 }

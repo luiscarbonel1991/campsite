@@ -1,6 +1,6 @@
 package com.reservation.campsite.mapper;
 
-import com.reservation.campsite.dto.ErrorResponseDTO;
+import com.reservation.campsite.dto.response.ErrorResponseDTO;
 
 @FunctionalInterface
 public interface ToErrorResponseDTO {
