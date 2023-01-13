@@ -60,6 +60,7 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public void validateEmail(String email, String paramName) {
+        isNotEmptyOrNull(email, paramName);
         if(!EmailValidator.getInstance().isValid(email)) {
             throw BadRequestException.invalidEmail(email);
         }

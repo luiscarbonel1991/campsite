@@ -1,6 +1,7 @@
 package com.reservation.campsite.controller;
 
 import com.reservation.campsite.dto.request.ReservationRequestDTO;
+import com.reservation.campsite.dto.request.ReservationUpdateDTO;
 import com.reservation.campsite.dto.response.GeneralResponseDTO;
 import com.reservation.campsite.services.reservation.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +40,17 @@ public class ReservationController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 reservationService.create(reservationRequestDTO)
+        );
+    }
+
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<GeneralResponseDTO> update(
+            @PathVariable Long reservationId,
+            @RequestBody ReservationUpdateDTO reservationUpdateDTO
+    ) {
+        reservationService.update(reservationId, reservationUpdateDTO);
+        return ResponseEntity.ok(
+                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG ).toGeneralResponseDTO()
         );
     }
 
