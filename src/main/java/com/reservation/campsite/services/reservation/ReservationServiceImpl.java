@@ -27,6 +27,12 @@ import static com.reservation.campsite.mapper.Mapper.mapper;
 @Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
+    private final AvailabilityService availabilityService;
+
+    private final ValidateService validateService;
+
+    private final ReservationRepository reservationRepository;
+
     @Value("${campsite.max-advance-days}")
     private int maxAdvanceDays;
 
@@ -41,12 +47,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Value("${campsite.max-ahead-arrival-days}")
     private int maxAheadArrivalDays;
-
-    private final AvailabilityService availabilityService;
-
-    private final ValidateService validateService;
-
-    private final ReservationRepository reservationRepository;
 
 
     public ReservationServiceImpl(AvailabilityService availabilityService, ValidateService validateService, ReservationRepository reservationRepository) {
@@ -78,11 +78,11 @@ public class ReservationServiceImpl implements ReservationService {
         String emailToCreate = reservationDTO.getEmail();
         validateService.isNotEmptyOrNull(reservationDTO.getEmail(), "email");
         validateService.validateEmail(emailToCreate, "email");
-        this.validateStayRangeDays(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate());
-        Reservation reservationFound = this.reservationRepository.findByEmail(emailToCreate);
-        if (reservationFound != null && reservationFound.isNotCancelled()) {
-            throw BadRequestException.reservationAlreadyExists(ParamName.EMAIL.getNameParam(), emailToCreate);
-        }
+        LocalDate arrivalDateToCreate = reservationDTO.getArrivalDate();
+        LocalDate departureDateToCreate = reservationDTO.getDepartureDate();
+        this.validateStayRangeDays(arrivalDateToCreate, departureDateToCreate);
+
+        validateReservationAlreadyExist(emailToCreate, arrivalDateToCreate, departureDateToCreate);
         availabilityService.updateAvailability(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate(), -1);
         return Map.of("reservationId", this.save(mapper(reservationDTO).toReservation()).getId());
     }
@@ -90,19 +90,29 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void cancel(Long id) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
-        if (reservation.isPresent()) {
-            availabilityService.updateAvailability(reservation.get().getArrivalDate(), reservation.get().getDepartureDate(), 1);
-            Reservation reservationToSave = reservation.get();
-            reservationToSave.setCancelDate(Instant.now());
-            reservationRepository.save(reservationToSave);
-        } else {
+        if (reservation.isEmpty()) {
             throw NotFoundException.reservationIdNotFound(id);
         }
+
+        Reservation reservationToSave = reservation.get();
+        availabilityService.updateAvailability(reservationToSave.getArrivalDate(), reservationToSave.getDepartureDate(), 1);
+        reservationToSave.setCancelDate(Instant.now());
+        reservationRepository.save(reservationToSave);
     }
-    
+
     @Transactional
     public Reservation save(Reservation reservationToSave) {
         return this.reservationRepository.save(reservationToSave);
+    }
+
+    private void validateReservationAlreadyExist(String emailToCreate, LocalDate arrivalDateToCreate, LocalDate departureDateToCreate) {
+        Reservation reservationFound =
+                this.reservationRepository
+                        .findByEmailAndBetweenDateRangeNotCancelled(emailToCreate, arrivalDateToCreate, departureDateToCreate);
+
+        if (reservationFound != null) {
+            throw BadRequestException.reservationAlreadyExists(ParamName.EMAIL.getNameParam(), emailToCreate);
+        }
     }
 
     private void validateStayRangeDays(LocalDate arrivalDate, LocalDate departureDate) {
