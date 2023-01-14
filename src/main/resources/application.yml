@@ -10,7 +10,7 @@ spring:
     jpa:
       hibernate:
         ddl-auto: validate
-      show-sql: false
+      show-sql: true
 campsite:
   max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:31}
   max-stay-days: ${CAMPSITE_MAX_STAY_DAYS:3}

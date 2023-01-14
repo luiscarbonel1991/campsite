@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface AvailabilityRepository extends CrudRepository<Availability, Integer> {
-    List<Availability> findAvailabilitiesByDateBetween(LocalDate from, LocalDate to);
+    List<Availability> findAvailabilitiesByDateBetweenOrderByDate(LocalDate from, LocalDate to);
 }

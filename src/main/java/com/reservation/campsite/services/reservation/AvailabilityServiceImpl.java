@@ -21,7 +21,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Override
     public List<Availability> findAvailability(LocalDate dateFrom, LocalDate dateTo) {
-        return this.availabilityRepository.findAvailabilitiesByDateBetween(dateFrom, dateTo);
+        return this.availabilityRepository.findAvailabilitiesByDateBetweenOrderByDate(dateFrom, dateTo);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

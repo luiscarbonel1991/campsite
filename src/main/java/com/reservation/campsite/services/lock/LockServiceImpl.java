@@ -33,8 +33,9 @@ public class LockServiceImpl implements LockService {
             }
         } catch (BusinessException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             log.error(e.getMessage());
+            Thread.currentThread().interrupt();
             throw BadRequestException.lock();
         } finally {
             lock.unlock();

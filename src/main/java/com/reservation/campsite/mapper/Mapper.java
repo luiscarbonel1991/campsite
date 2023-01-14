@@ -3,6 +3,7 @@ package com.reservation.campsite.mapper;
 import com.reservation.campsite.dto.response.ErrorResponseDTO;
 import com.reservation.campsite.dto.request.ReservationRequestDTO;
 import com.reservation.campsite.dto.response.GeneralResponseDTO;
+import com.reservation.campsite.dto.response.ReservationDTO;
 import com.reservation.campsite.exception.BusinessException;
 import com.reservation.campsite.persistence.entity.Reservation;
 import com.reservation.campsite.util.RangeDate;
@@ -40,6 +41,19 @@ public class Mapper {
                       .departureDate(dto.getDepartureDate())
                       .createdDate(Instant.now())
                       .build();
+       }
+
+       public static ToReservationDTO mapper(Reservation reservation) {
+              return () -> ReservationDTO
+                        .builder()
+                        .id(reservation.getId())
+                        .name(reservation.getName())
+                        .email(reservation.getEmail())
+                        .arrivalDate(reservation.getArrivalDate())
+                        .departureDate(reservation.getDepartureDate())
+                        .createdDate(reservation.getCreatedDate())
+                        .cancelDate(reservation.getCancelDate())
+                        .build();
        }
 
        public ToGeneralResponseDTO mapper(String code, int status, String message) {
