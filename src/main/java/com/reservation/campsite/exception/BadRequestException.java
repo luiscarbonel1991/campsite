@@ -51,4 +51,9 @@ public class BadRequestException extends BusinessException {
         return new BadRequestException(code,
                 String.format("%s with %s: %s", code.getMessage(), paramName, object));
     }
+
+    public static BadRequestException lock() {
+        ErrorCode code = ErrorCode.BAD_REQUEST_TO_HIGH_DEMAND;
+        return new BadRequestException(code, String.format("%s. Please try again.", code.getMessage()));
+    }
 }

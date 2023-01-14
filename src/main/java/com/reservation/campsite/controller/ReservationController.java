@@ -3,6 +3,7 @@ package com.reservation.campsite.controller;
 import com.reservation.campsite.dto.request.ReservationRequestDTO;
 import com.reservation.campsite.dto.request.ReservationUpdateDTO;
 import com.reservation.campsite.dto.response.GeneralResponseDTO;
+import com.reservation.campsite.services.lock.LockService;
 import com.reservation.campsite.services.reservation.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,15 @@ import static com.reservation.campsite.mapper.Mapper.mapper;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+    private final LockService lockService;
     private final ReservationService reservationService;
 
+    private static final String LOCK_AVAILABILITY_MODIFY = "lock_availability_modify";
+    private static final int LOCK_AVAILABILITY_MODIFY_TIMEOUT = 10;
     private static final String CANCELLED_MSG = "Reservation cancelled successfully";
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(LockService lockService, ReservationService reservationService) {
+        this.lockService = lockService;
         this.reservationService = reservationService;
     }
 
@@ -34,13 +39,13 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findAvailability(dateFrom, dateTo));
     }
 
+
     @PostMapping
     public ResponseEntity<Map<String, Long>> create(
-           @RequestBody ReservationRequestDTO reservationRequestDTO
+            @RequestBody ReservationRequestDTO reservationRequestDTO
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                reservationService.create(reservationRequestDTO)
-        );
+        return lockService.lock(LOCK_AVAILABILITY_MODIFY, () -> ResponseEntity.status(HttpStatus.CREATED).body(
+                reservationService.create(reservationRequestDTO)), LOCK_AVAILABILITY_MODIFY_TIMEOUT);
     }
 
     @PutMapping("/{reservationId}")
@@ -48,9 +53,10 @@ public class ReservationController {
             @PathVariable Long reservationId,
             @RequestBody ReservationUpdateDTO reservationUpdateDTO
     ) {
+
         reservationService.update(reservationId, reservationUpdateDTO);
         return ResponseEntity.ok(
-                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG ).toGeneralResponseDTO()
+                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG).toGeneralResponseDTO()
         );
     }
 
@@ -60,7 +66,7 @@ public class ReservationController {
     ) {
         reservationService.cancel(reservationId);
         return ResponseEntity.ok(
-                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG ).toGeneralResponseDTO()
+                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG).toGeneralResponseDTO()
         );
     }
 }

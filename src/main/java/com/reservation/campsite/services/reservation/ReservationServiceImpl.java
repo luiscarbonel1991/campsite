@@ -33,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
 
+
     @Value("${campsite.max-advance-days}")
     private int maxAdvanceDays;
 
@@ -84,11 +85,11 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate arrivalDateToCreate = reservationDTO.getArrivalDate();
         LocalDate departureDateToCreate = reservationDTO.getDepartureDate();
         this.validateStayRangeDays(arrivalDateToCreate, departureDateToCreate);
-
         validateReservationAlreadyExist(emailToCreate, arrivalDateToCreate, departureDateToCreate);
         availabilityService.updateAvailability(reservationDTO.getArrivalDate(), reservationDTO.getDepartureDate(), -1);
         return Map.of(RESERVATION_ID.getNameParam(), this.save(mapper(reservationDTO).toReservation()).getId());
     }
+
 
     @Override
     public void update(Long reservationId, ReservationUpdateDTO reservationUpdateDTO) {
@@ -116,7 +117,6 @@ public class ReservationServiceImpl implements ReservationService {
         reservationToSave.setCancelDate(Instant.now());
         reservationRepository.save(reservationToSave);
     }
-
 
 
     @Transactional

@@ -9,7 +9,8 @@ public enum ErrorCode {
     BAD_REQUEST_INVALID_EMAIL(  "Invalid email"),
     BAD_REQUEST_RESERVATION_ALREADY_EXISTS( "Reservation already exists."),
     NOT_FOUND_AVAILABILITY_TO_DATE( "Not found availability to specific date"),
-    NOT_FOUND_RESERVATION_ID( "Not found reservation id");
+    NOT_FOUND_RESERVATION_ID( "Not found reservation id"),
+    BAD_REQUEST_TO_HIGH_DEMAND( "To high demand");
 
     private final String message;
 
