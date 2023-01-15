@@ -35,8 +35,8 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public void validateStayRangeDays(@NotNull LocalDate arrivalDate, @NotNull LocalDate departureDate, int minStayDays, int maxStayDays) {
-        String arrivalParamName = getParamName(ParamName.ARRIVAL, "arrivalDate");
-        String departureParamName  = getParamName(ParamName.DEPARTURE, "departureDate");
+        String arrivalParamName = ParamName.ARRIVAL_DATE.getNameParam();
+        String departureParamName  = ParamName.DEPARTURE_DATE.getNameParam();
         isNotNull(arrivalDate, arrivalParamName);
         isNotNull(departureDate, departureParamName);
         validateDateRange(arrivalDate, arrivalParamName, departureDate, departureParamName);
@@ -50,11 +50,11 @@ public class ValidateServiceImpl implements ValidateService {
     public void validateArrivalDate(@NotNull LocalDate arrivalDate, @NotNull LocalDate departureDate, RangeDate<LocalDate> validArrivalDateRange) {
 
         if(arrivalDate.isBefore(validArrivalDateRange.getFrom())) {
-            throw BadRequestException.invalidArrivalDate(arrivalDate, validArrivalDateRange);
+            throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
         }
 
         if(arrivalDate.isAfter(validArrivalDateRange.getTo())) {
-            throw BadRequestException.invalidArrivalDate(arrivalDate, validArrivalDateRange);
+            throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
         }
     }
 

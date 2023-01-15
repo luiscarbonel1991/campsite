@@ -44,4 +44,8 @@ public class Reservation {
     public boolean isNotCancelled() {
         return cancelDate == null;
     }
+
+    public boolean isCancelled() {
+        return cancelDate != null;
+    }
 }

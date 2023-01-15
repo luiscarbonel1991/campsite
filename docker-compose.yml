@@ -10,6 +10,12 @@ services:
       - MYSQL_PASSWORD=SomePasswordToCampsite
     ports:
       - 3306:3306
+  redis:
+    image: redis
+    container_name: campsite-redis
+    restart: always
+    ports:
+      - 9736:6379
     volumes:
         - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
 

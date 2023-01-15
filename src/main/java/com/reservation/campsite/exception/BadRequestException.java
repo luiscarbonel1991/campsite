@@ -4,6 +4,7 @@ import com.reservation.campsite.util.RangeDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -33,11 +34,11 @@ public class BadRequestException extends BusinessException {
                         code.getMessage(), minStayDays, maxStayDays, arrivalDate, departureDate));
     }
 
-    public static BadRequestException invalidArrivalDate(LocalDate arrivalDate, RangeDate<LocalDate> validRange) {
+    public static BadRequestException invalidArrivalDate(LocalDate arrivalDate, LocalDate departureDate, RangeDate<LocalDate> validRange) {
         ErrorCode code = ErrorCode.BAD_REQUEST_INVALID_DATE_RANGE;
         return new BadRequestException(code,
-                String.format("%s. Reservation must be made between %s and %s. Arrival date: %s",
-                        code.getMessage(), validRange.getFrom(), validRange.getTo(), arrivalDate));
+                String.format("%s. Range must be between %s and %s. Arrival date: %s, Departure date: %s",
+                        code.getMessage(), validRange.getFrom(), validRange.getTo(), arrivalDate, departureDate));
     }
 
     public static BadRequestException invalidEmail(String email) {
@@ -50,5 +51,16 @@ public class BadRequestException extends BusinessException {
         ErrorCode code = ErrorCode.BAD_REQUEST_RESERVATION_ALREADY_EXISTS;
         return new BadRequestException(code,
                 String.format("%s with %s: %s", code.getMessage(), paramName, object));
+    }
+
+    public static BadRequestException updateCancelledReservation(Instant cancelDate) {
+        ErrorCode code = ErrorCode.BAD_REQUEST_UPDATE_CANCELLED_RESERVATION;
+        return new BadRequestException(code,
+                String.format("%s. Reservation was cancelled at %s", code.getMessage(), cancelDate));
+    }
+
+    public static BadRequestException lock() {
+        ErrorCode code = ErrorCode.BAD_REQUEST_TO_HIGH_DEMAND;
+        return new BadRequestException(code, String.format("%s. Please try again.", code.getMessage()));
     }
 }
