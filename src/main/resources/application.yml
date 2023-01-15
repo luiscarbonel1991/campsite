@@ -2,6 +2,7 @@ server:
   port: ${PORT:8080}
   servlet:
     context-path: /campsite
+
 spring:
     datasource:
       url: jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC
@@ -10,10 +11,15 @@ spring:
     jpa:
       hibernate:
         ddl-auto: validate
-      show-sql: true
+      show-sql: false
+
 campsite:
   max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:31}
   max-stay-days: ${CAMPSITE_MAX_STAY_DAYS:3}
   min-stay-days: ${CAMPSITE_MIN_STAY_DAYS:1}
   min-ahead-arrival-days: ${CAMPSITE_MIN_AHEAD_ARRIVAL_DAYS:1}
   max-ahead-arrival-days: ${CAMPSITE_MAX_AHEAD_ARRIVAL_DAYS:31}
+
+cache:
+  availabilityRangeDates:
+    ttlMinutes: ${CACHE_AVAILABILITY_RANGE_DATES_TTL_MINUTES:60}

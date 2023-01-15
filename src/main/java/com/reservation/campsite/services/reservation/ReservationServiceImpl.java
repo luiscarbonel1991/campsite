@@ -1,5 +1,6 @@
 package com.reservation.campsite.services.reservation;
 
+import com.reservation.campsite.configuration.CacheConfig;
 import com.reservation.campsite.dto.request.ReservationRequestDTO;
 import com.reservation.campsite.dto.request.ReservationUpdateDTO;
 import com.reservation.campsite.exception.BadRequestException;
@@ -10,6 +11,8 @@ import com.reservation.campsite.services.validation.ValidateService;
 import com.reservation.campsite.util.RangeDate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
     private final ValidateService validateService;
 
     private final ReservationRepository reservationRepository;
+
+    private final CacheManager cacheManager;
 
 
     @Value("${campsite.max-advance-days}")
@@ -52,11 +57,13 @@ public class ReservationServiceImpl implements ReservationService {
     private static final int DECREASE_AVAILABILITY = -1;
 
 
-    public ReservationServiceImpl(AvailabilityService availabilityService, ValidateService validateService, ReservationRepository reservationRepository) {
+    public ReservationServiceImpl(AvailabilityService availabilityService, ValidateService validateService, ReservationRepository reservationRepository, CacheManager cacheManager) {
         this.availabilityService = availabilityService;
         this.validateService = validateService;
         this.reservationRepository = reservationRepository;
+        this.cacheManager = cacheManager;
     }
+
 
     @Override
     public Map<LocalDate, Integer> findAvailability(LocalDate arrivalDate, LocalDate departureDate) {
@@ -75,6 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
         return map;
     }
 
+
     @Transactional
     @Override
     public Reservation create(ReservationRequestDTO reservationDTO) {
@@ -86,6 +94,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate departureDateToCreate = reservationDTO.getDepartureDate();
         this.validateStayRangeDays(arrivalDateToCreate, departureDateToCreate, minStayDays, maxStayDays);
         validateNotAlreadyExistReservation(emailToCreate, arrivalDateToCreate, departureDateToCreate);
+        clearAvailabilityRangeDatesCache(arrivalDateToCreate, departureDateToCreate);
         availabilityService.updateAvailability(arrivalDateToCreate, departureDateToCreate, DECREASE_AVAILABILITY);
         return this.save(mapper(reservationDTO).toReservation());
     }
@@ -103,6 +112,8 @@ public class ReservationServiceImpl implements ReservationService {
         if (Boolean.TRUE.equals(needsUpdatingByStayDate(reservationFound, arrivalDateToUpdate, departureDateToUpdate))) {
             validateStayRangeDays(arrivalDateToUpdate, departureDateToUpdate, minStayDays, maxStayDays);
             validateNotAlreadyExistReservation(reservationFound.getEmail(), arrivalDateToUpdate, departureDateToUpdate);
+            clearAvailabilityRangeDatesCache(reservationFound.getArrivalDate(), reservationFound.getDepartureDate());
+            clearAvailabilityRangeDatesCache(arrivalDateToUpdate, departureDateToUpdate);
             availabilityService.updateAvailability(reservationFound.getArrivalDate(), reservationFound.getDepartureDate(), INCREASE_AVAILABILITY);
             availabilityService.updateAvailability(arrivalDateToUpdate, departureDateToUpdate, DECREASE_AVAILABILITY);
         } else {
@@ -130,9 +141,12 @@ public class ReservationServiceImpl implements ReservationService {
     public void cancel(Long id) {
         Reservation reservationToCancel = findById(id);
         if (reservationToCancel.isNotCancelled()) {
+            clearAvailabilityRangeDatesCache(reservationToCancel.getArrivalDate(), reservationToCancel.getDepartureDate());
             availabilityService.updateAvailability(reservationToCancel.getArrivalDate(), reservationToCancel.getDepartureDate(), INCREASE_AVAILABILITY);
             reservationToCancel.setCancelDate(Instant.now());
             reservationRepository.save(reservationToCancel);
+        } else {
+            throw BadRequestException.alreadyCancelled();
         }
     }
 
@@ -184,5 +198,18 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate validStartArrivalDate = LocalDate.now().plusDays(minAheadArrivalDays);
         LocalDate validEndArrivalDate = LocalDate.now().plusDays(maxAheadArrivalDays);
         return mapper(validStartArrivalDate, validEndArrivalDate).toDateRange();
+    }
+
+    @CacheEvict(value = CacheConfig.AVAILABILITY_RANGE_DATES_CACHE, key = "#arrivalDate.toString() + #departureDate.toString()")
+    public void clearAvailabilityRangeDatesCache(LocalDate arrivalDate, LocalDate departureDate) {
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Clearing cache for availability range dates: {} - {}", arrivalDate, departureDate);
+            }
+            Objects.requireNonNull(cacheManager.getCache(CacheConfig.AVAILABILITY_RANGE_DATES_CACHE))
+                    .evictIfPresent(arrivalDate.toString() + departureDate.toString());
+        } catch (Exception e) {
+            log.error("Error clearing cache for availability range dates: {} - {}", arrivalDate, departureDate);
+        }
     }
 }

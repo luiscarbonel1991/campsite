@@ -23,7 +23,7 @@ public class BadRequestException extends BusinessException {
     public static BadRequestException invalidDateRange(LocalDate from, String nameFromParam, LocalDate to, String nameToParam) {
         ErrorCode code = ErrorCode.BAD_REQUEST_INVALID_DATE_RANGE;
         return new BadRequestException(code,
-                String.format("%s. Start date can not be after end date. %s: %s, %s: %s",code.getMessage(),
+                String.format("%s. Start date can not be after end date. %s: %s, %s: %s", code.getMessage(),
                         nameFromParam, from, nameToParam, to));
     }
 
@@ -62,5 +62,10 @@ public class BadRequestException extends BusinessException {
     public static BadRequestException lock() {
         ErrorCode code = ErrorCode.BAD_REQUEST_TO_HIGH_DEMAND;
         return new BadRequestException(code, String.format("%s. Please try again.", code.getMessage()));
+    }
+
+    public static BadRequestException alreadyCancelled() {
+        ErrorCode code = ErrorCode.BAD_REQUEST_ALREADY_CANCELLED;
+        return new BadRequestException(code, String.format("%s. Reservation was already cancelled.", code.getMessage()));
     }
 }
