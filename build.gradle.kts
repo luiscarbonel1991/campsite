@@ -3,6 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.0.1"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("io.freefair.lombok") version "6.6.1"
+	id("com.google.cloud.tools.jib") version "3.3.0"
 }
 
 group = "com.reservation"
@@ -10,7 +11,6 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 val shedlockVersion = "4.28.0"
-val redisVersion = "6.0.1"
 
 repositories {
 	mavenCentral()
@@ -40,8 +40,18 @@ dependencies {
 
 	// for testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.h2database:h2")
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jib {
+	from {
+		image = "openjdk:17-jdk-alpine"
+	}
+	to {
+		image = project.name
+	}
 }
