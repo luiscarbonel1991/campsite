@@ -10,7 +10,6 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 val shedlockVersion = "4.28.0"
-val redisVersion = "6.0.1"
 
 repositories {
 	mavenCentral()
@@ -40,6 +39,7 @@ dependencies {
 
 	// for testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.h2database:h2")
 }
 
 tasks.withType<Test> {
