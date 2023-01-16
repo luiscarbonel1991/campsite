@@ -4,14 +4,17 @@ server:
     context-path: /campsite
 
 spring:
-    datasource:
-      url: jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC
+  datasource:
+      url: ${DB-URL:jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC}
       username: ${DB-USER:campsite}
       password: ${DB-PASS:SomePasswordToCampsite}
-    jpa:
-      hibernate:
-        ddl-auto: validate
-      show-sql: false
+      jpa:
+        hibernate:
+          ddl-auto: validate
+        show-sql: false
+redis:
+     host: ${REDIS-HOST:localhost}
+     port: ${REDIS-PORT:9736}
 
 campsite:
   max-advance-days: ${CAMPSITE_MAX_ADVANCE_DAYS:31}
