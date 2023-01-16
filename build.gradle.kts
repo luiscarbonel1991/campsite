@@ -3,6 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.0.1"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("io.freefair.lombok") version "6.6.1"
+	id("com.google.cloud.tools.jib") version "3.3.0"
 }
 
 group = "com.reservation"
@@ -44,4 +45,13 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jib {
+	from {
+		image = "openjdk:17-jdk-alpine"
+	}
+	to {
+		image = project.name
+	}
 }
