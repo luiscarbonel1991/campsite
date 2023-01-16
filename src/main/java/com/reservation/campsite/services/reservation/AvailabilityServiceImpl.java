@@ -36,7 +36,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
         availabilities.forEach(availability -> {
             if (availability.getAvailable() == 0 && Integer.signum(plus) == -1) {
-                throw NotFoundException.availabilityDateRange(availability.getDate());
+                throw NotFoundException.availabilityDate(availability.getDate());
             }
             availability.setAvailable(availability.getAvailable() + plus);
         });
