@@ -146,7 +146,7 @@ public class ReservationServiceImpl implements ReservationService {
             reservationToCancel.setCancelDate(Instant.now());
             reservationRepository.save(reservationToCancel);
         } else {
-            throw BadRequestException.alreadyCancelled();
+            throw BadRequestException.alreadyCancelled(id);
         }
     }
 
@@ -178,12 +178,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void validateNotAlreadyExistReservation(String emailToCreate, LocalDate arrivalDate, LocalDate departureDate) {
-        List<Reservation> reservationFound =
+        List<Reservation> reservationsFound =
                 this.reservationRepository
                         .findByEmailAndBetweenDateRangeNotCancelled(emailToCreate, arrivalDate, departureDate);
 
-        if (!reservationFound.isEmpty()) {
-            throw BadRequestException.reservationAlreadyExists(EMAIL.getNameParam(), emailToCreate);
+        if (!reservationsFound.isEmpty()) {
+            throw BadRequestException.reservationAlreadyExists(mapper(reservationsFound.get(0)).toReservationDTO());
         }
     }
 
