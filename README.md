@@ -53,8 +53,8 @@ sh script-test.sh
 
 ## Documentation
 
-* **Swagger**: http://<host:port>/campsite/swagger-ui/index.html#/reservation-controller
-* **OpenAPI**: http://<host:port>/campsite/api-docs
+* **Swagger**: http://localhost:8080/campsite/swagger-ui/index.html#/reservation-controller
+* **OpenAPI**: http://localhost:8080/campsite/api-docs
 * **Postman**: **Campsite-API.postman_collection.json**
 
 ## FAQ
