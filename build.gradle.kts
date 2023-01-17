@@ -10,6 +10,7 @@ group = "com.reservation"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+val springDocVersion = "2.0.2"
 val shedlockVersion = "4.28.0"
 
 repositories {
@@ -29,6 +30,9 @@ dependencies {
 	implementation ("io.lettuce:lettuce-core")
 	implementation("net.javacrumbs.shedlock:shedlock-spring:$shedlockVersion")
 	implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockVersion")
+
+	// swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 
 	// for mysql
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
