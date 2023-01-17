@@ -33,6 +33,9 @@ springdoc:
     path: /api-docs
   show-actuator: false
 management:
+  endpoint:
+    shutdown:
+      enabled: true
   endpoints:
     web:
       exposure:
