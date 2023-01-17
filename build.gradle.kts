@@ -53,9 +53,13 @@ tasks.withType<Test> {
 
 jib {
 	from {
-		image = "openjdk:17-jdk-alpine"
+		image = "openjdk:17-alpine"
 	}
 	to {
 		image = project.name
+	}
+	container {
+		jvmFlags = listOf("-Xms500m", "-Xmx500m")
+		creationTime = "USE_CURRENT_TIMESTAMP"
 	}
 }

@@ -5,13 +5,14 @@ server:
 
 spring:
   datasource:
-      url: ${DB-URL:jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC}
-      username: ${DB-USER:campsite}
-      password: ${DB-PASS:SomePasswordToCampsite}
+    url: ${DB-URL:jdbc:mysql://localhost:3306/campsite?useSSL=false&serverTimezone=UTC}
+    username: ${DB-USER:campsite}
+    password: ${DB-PASS:SomePasswordToCampsite}
   jpa:
-      hibernate:
-        ddl-auto: validate
-      show-sql: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
 redis:
      host: ${REDIS-HOST:localhost}
      port: ${REDIS-PORT:9736}
