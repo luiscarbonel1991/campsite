@@ -1,23 +1,7 @@
 services:
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      - MYSQL_DATABASE=campsite
-      - MYSQL_ROOT_PASSWORD=SomeRootPasswordToCampsite
-      - MYSQL_USER=campsite
-      - MYSQL_PASSWORD=SomePasswordToCampsite
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-    ports:
-      - 3306:3306
-    volumes:
-      - ./mysql-scripts/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - ./mysql-scripts/data.sql:/docker-entrypoint-initdb.d/02-data.sql
   campsite:
     image: campsite
+    container_name: campsite-api
     restart: always
     ports:
       - 8080:8080
@@ -27,7 +11,7 @@ services:
     environment:
       - DB-USER=campsite
       - DB-PASS=SomePasswordToCampsite
-      - DB-URL=jdbc:mysql://mysql:3306/campsite?useSSL=false&serverTimezone=UTC
+      - DB-URL=jdbc:mysql://mysql:3306/campsite?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       - PORT=8080
       - CAMPSITE_MAX_ADVANCE_DAYS=31
       - CAMPSITE_MAX_STAY_DAYS=3
@@ -39,8 +23,23 @@ services:
       - REDIS-PORT=6379
     volumes:
       - ./docker.properties:/app/resources/application.properties
+  mysql:
+    image: mysql:8.0
+    container_name: campsite-mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=campsite
+      - MYSQL_ROOT_PASSWORD=SomeRootPasswordToCampsite
+      - MYSQL_USER=campsite
+      - MYSQL_PASSWORD=SomePasswordToCampsite
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql-scripts/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./mysql-scripts/data.sql:/docker-entrypoint-initdb.d/02-data.sql
   redis:
     image: redis
+    container_name: campsite-redis
     restart: always
     ports:
       - 9736:6379

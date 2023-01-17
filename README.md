@@ -36,19 +36,19 @@
 ### Build the image
 
 ```shell
-sh script-build.sh
+bash script-build
 ```
 ### Running the project
 
 ```shell
-sh script-run.sh
+bash script-run
 ```
 ### Running the tests
 
 In order to run the project tests you need to execute the following command:
 
-```
-sh script-test.sh
+```shell
+bash script-test
 ```
 
 ## Documentation
