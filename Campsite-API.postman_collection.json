@@ -1,0 +1,563 @@
+{
+	"info": {
+		"_postman_id": "b5f9974a-d8e0-4025-b0c7-78652b029781",
+		"name": "Campsite-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18770814"
+	},
+	"item": [
+		{
+			"name": "reservations",
+			"item": [
+				{
+					"name": "{reservationId}",
+					"item": [
+						{
+							"name": "Update a reservation",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reservations/:reservationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations",
+										":reservationId"
+									],
+									"variable": [
+										{
+											"key": "reservationId",
+											"value": "-83522419",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update a reservation",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/campsite/reservations/:reservationId",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"campsite",
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": -14049722,\n  \"name\": \"magna cupidatat nostrud\",\n  \"email\": \"laboris\",\n  \"arrivalDate\": \"1950-02-12\",\n  \"departureDate\": \"1993-12-18\",\n  \"createdDate\": \"2004-01-18T12:39:50.289Z\",\n  \"updateDate\": \"1965-01-30T02:51:00.122Z\",\n  \"cancelDate\": \"2016-04-08T18:41:55.298Z\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/reservations/:reservationId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+								},
+								{
+									"name": "Reservation not found by id",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/reservations/:reservationId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Cancel a reservation",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/reservations/:reservationId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations",
+										":reservationId"
+									],
+									"variable": [
+										{
+											"key": "reservationId",
+											"value": "-83522419",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Cancel a reservation",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/campsite/reservations/:reservationId",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"campsite",
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"est eiusmod\",\n  \"status\": 30592198,\n  \"timestamp\": \"1976-03-11T05:07:16.891Z\",\n  \"code\": \"ipsum consequat nisi mollit\"\n}"
+								},
+								{
+									"name": "Bad request",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/reservations/:reservationId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+								},
+								{
+									"name": "Reservation not found by id",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/reservations/:reservationId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reservations",
+												":reservationId"
+											],
+											"variable": [
+												{
+													"key": "reservationId",
+													"value": "-83522419",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Create a reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reservations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reservations"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create a reservation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reservations",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": -14049722,\n  \"name\": \"magna cupidatat nostrud\",\n  \"email\": \"laboris\",\n  \"arrivalDate\": \"1950-02-12\",\n  \"departureDate\": \"1993-12-18\",\n  \"createdDate\": \"2004-01-18T12:39:50.289Z\",\n  \"updateDate\": \"1965-01-30T02:51:00.122Z\",\n  \"cancelDate\": \"2016-04-08T18:41:55.298Z\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Excepteur ex\",\n  \"email\": \"deserunt ut in\",\n  \"arrivalDate\": \"2020-03-04\",\n  \"departureDate\": \"1977-07-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reservations",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Search availability by arrival and departure dates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reservations/availability?arrivalDate=2007-04-16&departureDate=2007-04-16",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reservations",
+								"availability"
+							],
+							"query": [
+								{
+									"key": "arrivalDate",
+									"value": "2007-04-16"
+								},
+								{
+									"key": "departureDate",
+									"value": "2007-04-16"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Search availability by arrival and departure dates",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/reservations/availability?arrivalDate=2007-04-16&departureDate=2007-04-16",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations",
+										"availability"
+									],
+									"query": [
+										{
+											"key": "arrivalDate",
+											"value": "2007-04-16"
+										},
+										{
+											"key": "departureDate",
+											"value": "2007-04-16"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"proident8\": 3783517,\n  \"dolore6\": 39774227,\n  \"voluptate11e\": 98003234\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/reservations/availability?arrivalDate=2007-04-16&departureDate=2007-04-16",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reservations",
+										"availability"
+									],
+									"query": [
+										{
+											"key": "arrivalDate",
+											"value": "2007-04-16"
+										},
+										{
+											"key": "departureDate",
+											"value": "2007-04-16"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"nisi dolor sit no\",\n  \"error\": \"eiusmod ea nisi dolor esse\",\n  \"status\": 13144754,\n  \"timestamp\": \"1994-07-22T03:33:43.781Z\",\n  \"code\": \"in\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081/campsite",
+			"type": "string"
+		}
+	]
+}

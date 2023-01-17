@@ -53,7 +53,9 @@ sh script-test.sh
 
 ## Documentation
 
-* To define the documentation
+* **Swagger**: http://<host:port>/campsite/swagger-ui/index.html#/reservation-controller
+* **OpenAPI**: http://<host:port>/campsite/api-docs
+* **Postman**: **Campsite-API.postman_collection.json**
 
 ## FAQ
 
