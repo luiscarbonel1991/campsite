@@ -51,6 +51,14 @@ In order to run the project tests you need to execute the following command:
 bash script-test
 ```
 
+#### Load testing
+* Our microservice was load tested with JMeter. Steps to follow:
+  * Have Docker image running, see [How To Use](#how-to-use)
+  * Download [JMeter](https://jmeter.apache.org/download_jmeter.cgi)
+  * Open JMeter
+  * Open the file `src/main/resources/JMeterLoadTest.jmx`
+  * Run the test
+
 ## Documentation
 
 * **Swagger**: http://localhost:8080/campsite/swagger-ui/index.html#/reservation-controller
