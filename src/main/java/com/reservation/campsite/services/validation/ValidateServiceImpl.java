@@ -48,12 +48,25 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public void validateArrivalDate(@NotNull LocalDate arrivalDate, @NotNull LocalDate departureDate, RangeDate<LocalDate> validArrivalDateRange) {
+        String arrivalParamName = ParamName.ARRIVAL_DATE.getNameParam();
+        String departureParamName  = ParamName.DEPARTURE_DATE.getNameParam();
+        isNotNull(arrivalDate, arrivalParamName);
+        isNotNull(departureDate, departureParamName);
+        validateDateRange(arrivalDate, arrivalParamName, departureDate, departureParamName);
 
         if(arrivalDate.isBefore(validArrivalDateRange.getFrom())) {
             throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
         }
 
         if(arrivalDate.isAfter(validArrivalDateRange.getTo())) {
+            throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
+        }
+
+        if (departureDate.isAfter(validArrivalDateRange.getTo())) {
+            throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
+        }
+
+        if (departureDate.isBefore(validArrivalDateRange.getFrom())) {
             throw BadRequestException.invalidArrivalDate(arrivalDate, departureDate, validArrivalDateRange);
         }
     }
@@ -64,9 +77,5 @@ public class ValidateServiceImpl implements ValidateService {
         if(!EmailValidator.getInstance().isValid(email)) {
             throw BadRequestException.invalidEmail(email);
         }
-    }
-
-    private String getParamName(ParamName paramName, String defaultValue) {
-        return paramName == null ? defaultValue : paramName.getNameParam();
     }
 }

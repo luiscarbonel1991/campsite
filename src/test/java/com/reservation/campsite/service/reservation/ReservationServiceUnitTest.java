@@ -50,7 +50,8 @@ class ReservationServiceUnitTest {
                 Map.of(LocalDate.parse(arrivalDate.toString()), Pair.of(0, 10), LocalDate.parse(departureDate.toString()), Pair.of(0, 10));
         List<Availability> availabilitiesData =
                 getAvailabilitiesByDateRange(arrivalDate, departureDate.plusDays(1), expectedAvailable, expectedAvailable, customAvailabilitiesToSet);
-        Integer[] expectedAvailabilities = availabilitiesData.stream().map(Availability::getAvailable).toList().toArray(new Integer[0]);
+        Boolean[] expectedAvailabilities = availabilitiesData.stream()
+                .map(availability -> availability.getAvailable() > 0).toList().toArray(new Boolean[0]);
 
         // GIVEN
         ReservationService service = getReservationService();
@@ -59,7 +60,7 @@ class ReservationServiceUnitTest {
         Mockito.when(availabilityService.findAvailability(arrivalDate, departureDate)).thenReturn(availabilitiesData);
 
         // THEN
-        Map<LocalDate, Integer> availabilities = service.findAvailability(arrivalDate, departureDate);
+        Map<LocalDate, Boolean> availabilities = service.findAvailability(arrivalDate, departureDate);
         Assertions.assertThat(availabilities)
                 .isNotNull()
                 .isNotEmpty()
@@ -172,12 +173,10 @@ class ReservationServiceUnitTest {
         LocalDate departureDate = LocalDate.parse("2020-03-01");
         ReservationService service = getReservationService();
 
-        // WHEN
-        Mockito.when(availabilityService.findAvailability(arrivalDate, departureDate)).thenReturn(Collections.emptyList());
-
         // THEN
-        Assertions.assertThatThrownBy(() -> service.findAvailability(arrivalDate, departureDate))
-                .isInstanceOf(Exception.class);
+        Assertions.assertThat(service.findAvailability(arrivalDate, departureDate))
+                .isNotNull()
+                .isEmpty();
     }
 
     private ReservationService getReservationService() {

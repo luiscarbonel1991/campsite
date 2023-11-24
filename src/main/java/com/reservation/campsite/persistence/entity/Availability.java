@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Availability {
 
     @Id
@@ -31,6 +32,10 @@ public class Availability {
 
     @Column(name = "available_total", nullable = false)
     private Integer availableTotal = 0;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
 
     public boolean hasAvailability() {
         return this.available > 0;

@@ -1,10 +1,8 @@
 package com.reservation.campsite.services.reservation;
 
-import com.reservation.campsite.configuration.CacheConfig;
 import com.reservation.campsite.exception.NotFoundException;
 import com.reservation.campsite.persistence.entity.Availability;
 import com.reservation.campsite.persistence.repository.AvailabilityRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +20,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
 
-    @Cacheable(cacheNames = {CacheConfig.AVAILABILITY_RANGE_DATES_CACHE}, key = "#arrivalDate.toString() + #departureDate.toString()")
+    //@Cacheable(cacheNames = {CacheConfig.AVAILABILITY_RANGE_DATES_CACHE}, key = "#arrivalDate.toString() + #departureDate.toString()")
     @Override
     public List<Availability> findAvailability(LocalDate arrivalDate, LocalDate departureDate) {
         return this.availabilityRepository.findAvailabilitiesByDateBetweenOrderByDate(arrivalDate, departureDate);
