@@ -164,6 +164,6 @@ class AvailabilityServiceUnitTest {
 
 
     private AvailabilityService getAvailabilityService() {
-        return new AvailabilityServiceImpl(availabilityRepository);
+        return new AvailabilityServiceImpl(availabilityRepository, cacheManager);
     }
 }

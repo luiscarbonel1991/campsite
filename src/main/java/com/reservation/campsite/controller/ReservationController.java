@@ -5,7 +5,6 @@ import com.reservation.campsite.dto.request.ReservationUpdateDTO;
 import com.reservation.campsite.dto.response.ErrorResponseDTO;
 import com.reservation.campsite.dto.response.GeneralResponseDTO;
 import com.reservation.campsite.dto.response.ReservationDTO;
-import com.reservation.campsite.services.lock.LockService;
 import com.reservation.campsite.services.reservation.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,15 +25,11 @@ import static com.reservation.campsite.mapper.Mapper.mapper;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final LockService lockService;
     private final ReservationService reservationService;
 
-    private static final String LOCK_AVAILABILITY_MODIFY = "lock_availability_modify";
-    private static final int LOCK_UPDATE_AVAILABILITY_TIMEOUT_SECONDS = 10;
     private static final String CANCELLED_MSG = "Reservation cancelled successfully";
 
-    public ReservationController(LockService lockService, ReservationService reservationService) {
-        this.lockService = lockService;
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
@@ -44,12 +39,13 @@ public class ReservationController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDTO.class))}),
     })
     @GetMapping("/availability")
-    public ResponseEntity<Map<LocalDate, Integer>> getAvailability(
+    public ResponseEntity<Map<LocalDate, Boolean>> getAvailability(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate arrivalDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
     ) {
         return ResponseEntity.ok(reservationService.findAvailability(arrivalDate, departureDate));
     }
+
 
     @Operation(summary = "Create a reservation")
     @ApiResponses(value = {
@@ -61,9 +57,11 @@ public class ReservationController {
     public ResponseEntity<ReservationDTO> create(
             @RequestBody ReservationRequestDTO reservationRequestDTO
     ) {
-        return lockService.lock(LOCK_AVAILABILITY_MODIFY, () -> ResponseEntity.status(HttpStatus.CREATED).body(
-                mapper(reservationService.create(reservationRequestDTO)).toReservationDTO()), LOCK_UPDATE_AVAILABILITY_TIMEOUT_SECONDS);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapper(reservationService.create(reservationRequestDTO))
+                        .toReservationDTO());
     }
+
 
     @Operation(summary = "Update a reservation")
     @ApiResponses(value = {
@@ -77,11 +75,11 @@ public class ReservationController {
             @PathVariable Long reservationId,
             @RequestBody ReservationUpdateDTO reservationUpdateDTO
     ) {
-        return lockService.lock(LOCK_AVAILABILITY_MODIFY, () -> ResponseEntity.ok(
-                        mapper(reservationService.update(reservationId, reservationUpdateDTO)).toReservationDTO()),
-                LOCK_UPDATE_AVAILABILITY_TIMEOUT_SECONDS);
+        return ResponseEntity.ok(
+                mapper(reservationService.update(reservationId, reservationUpdateDTO)).toReservationDTO());
 
     }
+
 
     @Operation(summary = "Cancel a reservation")
     @ApiResponses(value = {
@@ -94,11 +92,9 @@ public class ReservationController {
     public ResponseEntity<GeneralResponseDTO> cancel(
             @PathVariable Long reservationId
     ) {
-        return lockService.lock(LOCK_AVAILABILITY_MODIFY, () -> {
-            reservationService.cancel(reservationId);
-            return ResponseEntity.ok(
-                    mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG).toGeneralResponseDTO()
-            );
-        }, LOCK_UPDATE_AVAILABILITY_TIMEOUT_SECONDS);
+        reservationService.cancel(reservationId);
+        return ResponseEntity.ok(
+                mapper(HttpStatus.OK.name(), HttpStatus.OK.value(), CANCELLED_MSG).toGeneralResponseDTO()
+        );
     }
 }

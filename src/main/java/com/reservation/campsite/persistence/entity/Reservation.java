@@ -41,6 +41,10 @@ public class Reservation {
     private Instant updateDate;
     @Column(name = "cancel_date", nullable = false)
     private Instant cancelDate;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
     
     public boolean isNotCancelled() {
         return cancelDate == null;

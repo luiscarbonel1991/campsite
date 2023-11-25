@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface ReservationService {
 
-    Map<LocalDate, Integer> findAvailability(LocalDate dateFrom, LocalDate dateTo);
+    Map<LocalDate, Boolean> findAvailability(LocalDate dateFrom, LocalDate dateTo);
 
     Reservation create(ReservationRequestDTO reservationRequestDTO);
 

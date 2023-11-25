@@ -1,17 +1,28 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
 	java
-	id("org.springframework.boot") version "3.0.1"
-	id("io.spring.dependency-management") version "1.1.0"
-	id("io.freefair.lombok") version "6.6.1"
-	id("com.google.cloud.tools.jib") version "3.3.1"
+	id("org.springframework.boot") version "3.2.0"
+	id("io.spring.dependency-management") version "1.1.4"
+	id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
 group = "com.reservation"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+}
 
 val springDocVersion = "2.0.2"
 val commonsValidatorVersion = "1.7"
+
+configurations {
+	compileOnly {
+		extendsFrom(configurations.annotationProcessor.get())
+	}
+}
+
 
 repositories {
 	mavenCentral()
@@ -51,12 +62,26 @@ tasks.withType<Test> {
 
 jib {
 	from {
-		image = "openjdk:17-alpine"
+		image = "amazoncorretto:21-alpine-jdk"
 	}
 	to {
 		image = project.name
 	}
 	container {
 		jvmFlags = listOf("-Xms500m", "-Xmx500m")
+	}
+
+}
+
+tasks.test{
+	testLogging {
+		events("passed", "skipped", "failed")
+		showExceptions = true
+		showCauses = true
+		showStackTraces = true
+		exceptionFormat = TestExceptionFormat.FULL
+
+		// For verbose logging
+		// showStandardStreams = true
 	}
 }

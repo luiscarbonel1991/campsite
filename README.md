@@ -19,12 +19,12 @@
 * Cancel a reservation.
 
 #### Business Rules
-* To streamline the reservations a few constraints need to be in place:
+* To streamline the reservations, a few constraints need to be in place:
     * The campsite will be free for all.
     * The campsite can be reserved for max 3 days.
     * The campsite can be reserved minimum 1 day(s) ahead of arrival and up to 1 month in advance.
     * Reservations can be cancelled anytime.
-    * For sake of simplicity assume the check-in & check-out time is 12:00 AM  
+    * For the sake of simplicity, assume the check-in & check-out time is 12:00 AM  
 
 ## Dependencies
 * [MySQL](https://dev.mysql.com/)
@@ -36,23 +36,23 @@
 ### Build the image
 
 ```shell
-bash script-build
+bash scripts/run-build
 ```
 ### Running the project
 
 ```shell
-bash script-run
+bash scripts/run
 ```
 ### Running the tests
 
-In order to run the project tests you need to execute the following command:
+In order to run the project tests, you need to execute the following command:
 
 ```shell
-bash script-test
+bash scripts/run-test
 ```
 
 #### Load testing
-* Our microservice was load tested with JMeter. Steps to follow:
+* Our microservice load was tested with JMeter. Steps to follow:
   * Have Docker image running, see [How To Use](#how-to-use)
   * Download [JMeter](https://jmeter.apache.org/download_jmeter.cgi)
   * Open JMeter
@@ -67,5 +67,5 @@ bash script-test
 
 ## FAQ
 
-* If you want to add new features to this project please [see the contribution guide](.github/CONTRIBUTING.md)
-* Questions?, <a href="mailto:luis.carbonel1991@gmail.com?Subject=Question about Project" target="_blank">write here</a>
+* If you want to add new features to this project, please [see the contribution guide](.github/CONTRIBUTING.md)
+* Questions?, <a href="mailto:devlachweb@gmail.com?Subject=Question about Project" target="_blank">write here</a>
