@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,14 +77,40 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         this.validateStayRangeDays(arrivalDate, departureDate, minAheadArrivalDays, maxAheadArrivalDays);
-        return availabilityService.findAvailability(arrivalDate, departureDate)
-                .stream()
-                .collect(
-                        Collectors.toMap(
-                                Availability::getDate,
-                                entry -> entry.getAvailable() > 0
-                        )
-                );
+
+        RedisCache availabilityRangeDatesCache = (RedisCache) cacheManager.getCache(CacheConfig.AVAILABILITY_RANGE_DATES_CACHE);
+
+
+        Map<LocalDate, Boolean> result;
+        if (availabilityRangeDatesCache != null) {
+            result = Objects.requireNonNull(arrivalDate).datesUntil(departureDate.plusDays(1))
+                    .collect(
+                            Collectors.toMap(
+                                    date -> date,
+                                    date -> {
+                                        Boolean available = availabilityRangeDatesCache.get(String.valueOf(date), Boolean.class);
+                                        if(available == null) {
+                                            available = availabilityService.findAvailability(date, date).
+                                                    stream().findFirst().map(availability -> availability.getAvailable() > 0).orElse(false);
+                                            availabilityRangeDatesCache.put(String.valueOf(date), available);
+                                        }
+                                        return available;
+                                    }
+                            )
+                    );
+
+        } else {
+            result = availabilityService.findAvailability(arrivalDate, departureDate)
+                    .stream()
+                    .collect(
+                            Collectors.toMap(
+                                    Availability::getDate,
+                                    entry -> entry.getAvailable() > 0
+                            )
+                    );
+        }
+
+        return result;
     }
 
 
@@ -98,6 +125,13 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate departureDateToCreate = reservationDTO.getDepartureDate();
         validateStayRangeDays(arrivalDateToCreate, departureDateToCreate, minStayDays, maxStayDays);
         validateNotAlreadyExistReservation(emailToCreate, arrivalDateToCreate, departureDateToCreate);
+
+        var cache = cacheManager.getCache(CacheConfig.AVAILABILITY_RANGE_DATES_CACHE);
+        if (cache != null) {
+            arrivalDateToCreate.datesUntil(departureDateToCreate.plusDays(1))
+                    .forEach(date -> cache.evict(String.valueOf(date)));
+        }
+
         availabilityService.updateAvailability(arrivalDateToCreate, departureDateToCreate, DECREASE_AVAILABILITY);
         return this.save(mapper(reservationDTO).toReservation());
     }
@@ -120,25 +154,25 @@ public class ReservationServiceImpl implements ReservationService {
             departureDateToUpdate = reservationFound.getDepartureDate();
         }
 
-        if(emailToUpdate == null) {
+        if (emailToUpdate == null) {
             emailToUpdate = reservationFound.getEmail();
         }
 
         validateStayRangeDays(arrivalDateToUpdate, departureDateToUpdate, minStayDays, maxStayDays);
 
 
-        if(!emailToUpdate.equals(reservationFound.getEmail())) {
+        if (!emailToUpdate.equals(reservationFound.getEmail())) {
             validateService.validateEmail(reservationUpdateDTO.email(), EMAIL.getNameParam());
             validateNotAlreadyExistReservation(reservationUpdateDTO.email(), arrivalDateToUpdate, departureDateToUpdate);
         }
 
-        if(needsUpdatingByStayDate(reservationFound, arrivalDateToUpdate, departureDateToUpdate)) {
+        if (needsUpdatingByStayDate(reservationFound, arrivalDateToUpdate, departureDateToUpdate)) {
             availabilityService.updateAvailability(reservationFound.getArrivalDate(), reservationFound.getDepartureDate(), INCREASE_AVAILABILITY);
             availabilityService.updateAvailability(arrivalDateToUpdate, departureDateToUpdate, DECREASE_AVAILABILITY);
         }
 
 
-        if(reservationUpdateDTO.name() != null) {
+        if (reservationUpdateDTO.name() != null) {
             reservationFound.setName(reservationUpdateDTO.name());
         }
 

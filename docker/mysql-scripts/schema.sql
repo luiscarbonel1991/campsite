@@ -5,7 +5,7 @@ create table if not exists campsite.availability
     date            date not null,
     available       int  not null comment 'Number of available reservations',
     available_total int  not null comment 'Number of available total reservations',
-    version         bigint not null default 0 comment 'Version for optimistic locking',
+    version         int not null default 0 comment 'Version for optimistic locking',
     constraint availability_pk2
         unique (date),
     constraint check_available_greater_than
@@ -28,7 +28,7 @@ create table if not exists campsite.reservation
     create_date    datetime     not null,
     update_date    datetime     null,
     cancel_date    datetime     null,
-    version        bigint          not null default 0
+    version        int          not null default 0
 ) comment 'Contains campsite reservations';
 
 

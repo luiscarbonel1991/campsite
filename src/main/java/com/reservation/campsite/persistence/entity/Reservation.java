@@ -44,7 +44,7 @@ public class Reservation {
 
     @Version
     @Column(name = "version")
-    private Long version;
+    private Integer version;
     
     public boolean isNotCancelled() {
         return cancelDate == null;
